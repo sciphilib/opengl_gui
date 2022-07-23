@@ -43,16 +43,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FragmentShader.glsl">
+    <None Include="lightingObjectShader.glsl">
       <Filter>Файлы ресурсов</Filter>
     </None>
-    <None Include="VertexShader.glsl">
+    <None Include="VertexObjectShader.glsl">
       <Filter>Файлы ресурсов</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resources\SandyStone.png">
+    <None Include="sunShader.glsl">
       <Filter>Файлы ресурсов</Filter>
-    </Image>
+    </None>
+    <None Include="VertexSunShader.glsl">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>

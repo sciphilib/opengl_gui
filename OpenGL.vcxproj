@@ -31,11 +31,10 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FragmentShader.glsl" />
-    <None Include="VertexShader.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resources\SandyStone.png" />
+    <None Include="lightingObjectShader.glsl" />
+    <None Include="sunShader.glsl" />
+    <None Include="VertexObjectShader.glsl" />
+    <None Include="VertexSunShader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
