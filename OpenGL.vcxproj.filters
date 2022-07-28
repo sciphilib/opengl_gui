@@ -43,13 +43,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="lightingObjectShader.glsl">
+    <None Include="FragmentObjectShader.glsl">
       <Filter>Файлы ресурсов</Filter>
     </None>
     <None Include="VertexObjectShader.glsl">
       <Filter>Файлы ресурсов</Filter>
     </None>
-    <None Include="sunShader.glsl">
+    <None Include="FragmentSunShader.glsl">
       <Filter>Файлы ресурсов</Filter>
     </None>
     <None Include="VertexSunShader.glsl">

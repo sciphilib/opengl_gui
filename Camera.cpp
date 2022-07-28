@@ -8,14 +8,14 @@ Camera::Camera(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget, c
 glm::mat4 Camera::lookAt()
 {
 	
-	// 1. Create translation matrix
+	// create translation matrix
 	glm::mat4 mTran(1.0f);
-	mTran = glm::translate(mTran, -positionVector);
-	// 2. Create rotation matrix
+	mTran = glm::translate(mTran, -position);
+	// create rotation matrix
 	glm::mat4 mRot(1.0f);
-	mRot[0] = glm::vec4(leftVector, 0.0f);	
-	mRot[1] = glm::vec4(upVector, 0.0f);
-	mRot[2] = glm::vec4(forwardVector, 0.0f);
+	mRot[0] = glm::vec4(left, 0.0f);	
+	mRot[1] = glm::vec4(up, 0.0f);
+	mRot[2] = glm::vec4(forward, 0.0f);
 	// suppose we need to rotate the camera to +30 degree along X-axis
 	// it is equivalent to rotate the entire scene in opposite direction
 	// -30 degree on X-axis, thats why we need to invert rotation matrix
@@ -29,13 +29,13 @@ glm::mat4 Camera::lookAt()
 
 void Camera::init(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget, const glm::vec3& cameraUp)
 {
-	positionVector = cameraPosition;
+	position = cameraPosition;
 	// Compute direction (forward vector, -z)
-	forwardVector = glm::normalize(cameraPosition - cameraTarget);
+	forward = glm::normalize(cameraPosition - cameraTarget);
 	// Compute left axis (left vextor, -x)
-	leftVector = glm::normalize(glm::cross(cameraUp, forwardVector));
+	left = glm::normalize(glm::cross(cameraUp, forward));
 	// Compute up axis (y)
-	upVector = glm::normalize(glm::cross(forwardVector, leftVector));
+	up = glm::normalize(glm::cross(forward, left));
 	// set default camera attributes
 	yaw = 90.0f;
 	pitch = 0.0f;
@@ -48,13 +48,13 @@ void Camera::processKeyboard(Camera_Movement movement, float deltaTime)
 {
 	float velocity = movementSpeed * deltaTime;
 	if (movement == Camera_Movement::forward)
-		positionVector -= forwardVector * velocity;
+		position -= forward * velocity;
 	if (movement == Camera_Movement::backward)
-		positionVector += forwardVector * velocity;
+		position += forward * velocity;
 	if (movement == Camera_Movement::left)
-		positionVector -= leftVector * velocity;	
+		position -= left * velocity;	
 	if (movement == Camera_Movement::right)
-		positionVector += leftVector * velocity;
+		position += left * velocity;
 
 	//positionVector.y = 0.0f; // this one-liner keeps the user at the ground level (xz plane)
 }
@@ -92,12 +92,12 @@ void Camera::setEulerAngles(float yaw, float pitch)
 
 void Camera::updateCameraVectors()
 {
-	forwardVector.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	forwardVector.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	forwardVector.y = sin(glm::radians(pitch));
-	forwardVector	= glm::normalize(forwardVector);
-	leftVector		= glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), forwardVector));
-	upVector		= glm::normalize(glm::cross(forwardVector, leftVector));
+	forward.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	forward.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	forward.y = sin(glm::radians(pitch));
+	forward	= glm::normalize(forward);
+	left		= glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), forward));
+	up		= glm::normalize(glm::cross(forward, left));
 }
 
 float Camera::getCameraFov()

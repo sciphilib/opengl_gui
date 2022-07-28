@@ -31,8 +31,8 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lightingObjectShader.glsl" />
-    <None Include="sunShader.glsl" />
+    <None Include="FragmentObjectShader.glsl" />
+    <None Include="FragmentSunShader.glsl" />
     <None Include="VertexObjectShader.glsl" />
     <None Include="VertexSunShader.glsl" />
   </ItemGroup>

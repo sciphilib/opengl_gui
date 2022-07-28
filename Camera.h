@@ -21,12 +21,12 @@ public:
 	void processMouseScroll(float yoffset);
 	void setEulerAngles(float yaw, float pitch);
 	float getCameraFov();
-private:
+public:
 	// camera attributes
-	glm::vec3 positionVector;
-	glm::vec3 forwardVector;
-	glm::vec3 upVector;
-	glm::vec3 leftVector;
+	glm::vec3 position;
+	glm::vec3 forward;
+	glm::vec3 up;
+	glm::vec3 left;
 
 	// euler angles
 	float yaw;

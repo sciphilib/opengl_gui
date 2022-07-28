@@ -5,9 +5,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <cmath>
 
+#include "stb_image.h"	
 #include "Shader.h"
-#include "stb_image.h"
 #include "Camera.h"
 
 
@@ -40,7 +41,7 @@ float lastY = SCR_HEIGHT / 2.0;
 
 
 // the light source's location in world-space
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
 
 
 int main() {
@@ -131,7 +132,7 @@ int main() {
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
 
-	// (VBO). Generate vertex buffer object with buffer ID.
+	// (VBO). Generate vertex buffer object.
 	unsigned int VBO;
 
 	// (VAO). Generate vertex array object.
@@ -154,7 +155,9 @@ int main() {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+	// second, configure the light's VAO 
+	// (VBO stays the same the vertices
+	// are the same for the light object which is also a 3D cube)
 	unsigned int sunVAO;
 	glGenVertexArrays(1, &sunVAO);
 	glBindVertexArray(sunVAO);
@@ -183,13 +186,14 @@ int main() {
 	// stride (шаг) : 3 * sizeof(float) 12 or just 0 if array tightly packed
 	// offset: 0
 
-	Shader objectShader("VertexObjectShader.glsl", "lightingObjectShader.glsl");
-	Shader sunShader("VertexSunShader.glsl", "sunShader.glsl");
+	Shader objectShader("VertexObjectShader.glsl", "FragmentObjectShader.glsl");
+	Shader sunShader("VertexSunShader.glsl", "FragmentSunShader.glsl");
 	objectShader.use();
 	objectShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 	objectShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 	objectShader.setFloat("ambientStrength", 0.1f);
-	objectShader.setVec3fv("lightPos", lightPos);
+	objectShader.setVec3("lightPos", lightPos);
+
 
 	// camera/view transformation
 	glm::vec3 cameraPosition(0.0f, 0.0f, 3.0f);
@@ -215,15 +219,21 @@ int main() {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// activate shader
-		objectShader.use();
-		// model matrix
+		// model matrix and model matrix for normal vectors
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+		glm::mat4 normalModel = glm::mat4(1.0f);
+		model		= glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+		normalModel = glm::transpose(glm::inverse(model));
+		objectShader.use();
+		objectShader.setVec3("lightPos", lightPos);
 		objectShader.setMat4("model", model);
+		objectShader.setMat4("normalModel", normalModel);
+
 		// view matrix
 		glm::mat4 view = camera.lookAt();
 		objectShader.setMat4("view", view);
+		objectShader.setVec3("viewPos", camera.position);
+
 		// projection matrix
 		glm::mat4 projection = glm::perspective(glm::radians(camera.getCameraFov()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		objectShader.setMat4("projection", projection);
@@ -232,11 +242,16 @@ int main() {
 		glBindVertexArray(0);
 
 
-		sunShader.use();
 		// model matrix
 		model = glm::mat4(1.0f);
+		float sign = 1.0f;
+		//lightPos.x = std::sin(static_cast<float>(glfwGetTime())) * 2.0f;
+		lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
+		lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
+		//lightPos.z = std::cos(static_cast<float>(glfwGetTime())) * 2.0f;
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f));
+		sunShader.use();
 		sunShader.setMat4("model", model);
 		// the same view matrix
 		sunShader.setMat4("view", view);
@@ -270,13 +285,21 @@ int main() {
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
 		camera.processKeyboard(Camera_Movement::forward, deltaTime);
+	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
 		camera.processKeyboard(Camera_Movement::backward, deltaTime);
+	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
 		camera.processKeyboard(Camera_Movement::left, deltaTime);
+	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
 		camera.processKeyboard(Camera_Movement::right, deltaTime);
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -310,7 +333,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 	// x = 0 and y = 0 in upper-left
 	// depends on basis 
-	float xoffset =  (xpos - lastX);
+	float xoffset = (xpos - lastX);
 	float yoffset = (ypos - lastY);
 	lastX = xpos;
 	lastY = ypos;
