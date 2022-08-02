@@ -6,11 +6,12 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 #include "stb_image.h"	
 #include "Shader.h"
 #include "Camera.h"
-
+#include "Cube.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -23,14 +24,6 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 
-
-const unsigned int indices[] = {  
-	0, 1, 3,
-	1, 2, 3
-};
-
-
-
 // Camera object
 Camera camera;
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -41,10 +34,57 @@ float lastY = SCR_HEIGHT / 2.0;
 
 
 // the light source's location in world-space
-glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
+glm::vec3 lightPos(2.0f, 1.0f, 1.0f);
 
+//
+//float Cube::vertices[] =
+//{
+//					  //normal vectors coords
+//-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+// 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+// 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+// 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+//-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+//-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+//
+//-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+// 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+// 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+// 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+//-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+//-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+//
+//-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+//-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+//-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+//-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+//-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+//-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+//
+// 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+// 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+// 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+// 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+// 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+// 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+//
+//-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+// 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+// 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+// 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+//-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+//-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+//
+//-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+// 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+// 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+// 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+//-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+//-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+//};
 
-int main() {
+int main() 
+{
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -88,7 +128,7 @@ int main() {
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-						 //normal vectors coords
+						  //normal vectors coords
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -145,8 +185,7 @@ int main() {
 	// Hook this buf obj and tell what it will store.
 	// vertex array data -> GL_ARRAY_BUFFER.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, Cube::getVertArraySize(), Cube::getVertArray(), GL_STATIC_DRAW);
 	// position attributes
 	glBindVertexArray(objectVAO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -161,42 +200,57 @@ int main() {
 	unsigned int sunVAO;
 	glGenVertexArrays(1, &sunVAO);
 	glBindVertexArray(sunVAO);
+
 	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	
-
-	//// (EBO). Generate element buffer object.
-	//unsigned int EBO;
-	//glGenBuffers(1, &EBO);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-	
-	// Linking vertex attributes.
-	// 
-	// Vertex Ч collection of data per 3D coordinate (point).
-	// Vertex buffer data looks like:
-	// |  Vertex1   |  Vertex2   |  Vertex3   |
-	// | x | y | z  | x | y | z  | x | y | z  |
-	// 0   4   8   12   16  20   24  28  32   36 byte
-	// stride (шаг) : 3 * sizeof(float) 12 or just 0 if array tightly packed
-	// offset: 0
-
 	Shader objectShader("VertexObjectShader.glsl", "FragmentObjectShader.glsl");
 	Shader sunShader("VertexSunShader.glsl", "FragmentSunShader.glsl");
-	objectShader.use();
-	objectShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-	objectShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f); 
-	objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-	objectShader.setFloat("material.shininess", 32.0f);
-	objectShader.setVec3("light.position", lightPos);
-	objectShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-	objectShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-	objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+	//objectShader.use();
+	//objectShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+	//objectShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f); 
+	//objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	//objectShader.setFloat("material.shininess", 32.0f);
+	//objectShader.setVec3("light.position", lightPos);
+	//objectShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+	//objectShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+	//objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+	//glm::vec3 lightColor{}; // !!!!!!!!!!
+	//lightColor.x = std::sin(glfwGetTime() * 2.0f);
+	//lightColor.y = std::sin(glfwGetTime() * 0.7f);
+	//lightColor.z = std::sin(glfwGetTime() * 1.3f);
+
+	Cube* emerald_cube = new Cube(Material::Emerald);
+	Cube* jade_cube = new Cube(Material::Jade);
+	Cube* obsidian_cube = new Cube(Material::Obsidian);
+	Cube* pearl_cube = new Cube(Material::Pearl);
+	Cube* ruby_cube = new Cube(Material::Ruby);
+	Cube* turquoise_cube = new Cube(Material::Turquoise);
+	Cube* brass_cube = new Cube(Material::Brass);
+	Cube* bronze_cube = new Cube(Material::Bronze);
+	pearl_cube->setPosition(glm::vec3(-1.0f, 0.0f, -1.0f));
+	emerald_cube->setPosition(glm::vec3(1.0f, 0.0f, -1.0f));
+	jade_cube->setPosition(glm::vec3(3.0f, 0.0f, -1.0f));
+	obsidian_cube->setPosition(glm::vec3(5.0f, 0.0f, -1.0f));
+	ruby_cube->setPosition(glm::vec3(-1.0f, 2.0f, -1.0f));
+	turquoise_cube->setPosition(glm::vec3(1.0f, 2.0f, -1.0f));
+	brass_cube->setPosition(glm::vec3(3.0f, 2.0f, -1.0f));
+	bronze_cube->setPosition(glm::vec3(5.0f, 2.0f, -1.0f));
+
+	std::vector<Cube*> cubes;
+	//cubes.reserve(20);
+	cubes.push_back(emerald_cube);
+	cubes.push_back(jade_cube);
+	cubes.push_back(obsidian_cube);
+	cubes.push_back(pearl_cube);
+	cubes.push_back(ruby_cube);
+	cubes.push_back(turquoise_cube);
+	cubes.push_back(brass_cube);
+	cubes.push_back(bronze_cube);
+
 
 	// camera/view transformation
 	glm::vec3 cameraPosition(0.0f, 0.0f, 3.0f);
@@ -221,42 +275,52 @@ int main() {
 		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::vec3 lightColor{};
-		lightColor.x = std::sin(glfwGetTime() * 2.0f);
-		lightColor.y = std::sin(glfwGetTime() * 0.7f);
-		lightColor.z = std::sin(glfwGetTime() * 1.3f);
+		
+		// -------------
+		// Object render
+		// -------------
 
-		// model matrix and model matrix for normal vectors
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 normalModel = glm::mat4(1.0f);
-		model		= glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
-		normalModel = glm::transpose(glm::inverse(model));
-		objectShader.use();
-		objectShader.setVec3("light.diffuse", lightColor);
-		objectShader.setVec3("light.position", lightPos);
-		objectShader.setMat4("model", model);
-		objectShader.setMat4("normalModel", normalModel);
+		glm::mat4 model;
+		glm::mat4 normalModel;
+		glm::mat4 view;
+		glm::mat4 projection;
 
-		// view matrix
-		glm::mat4 view = camera.lookAt();
-		objectShader.setMat4("view", view);
-		objectShader.setVec3("viewPos", camera.position);
+		for (auto cube : cubes)
+		{
+			objectShader.use();
+			cube->setupShader(objectShader);
 
-		// projection matrix
-		glm::mat4 projection = glm::perspective(glm::radians(camera.getCameraFov()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		objectShader.setMat4("projection", projection);
-		glBindVertexArray(objectVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+			// model matrix and model matrix for normal vectors
+			model = glm::mat4(1.0f);
+			normalModel = glm::mat4(1.0f);
+			model = glm::translate(model, cube->getPosition());
+			normalModel = glm::transpose(glm::inverse(model));
+			objectShader.setVec3("light.position", lightPos);
+			objectShader.setMat4("model", model);
+			objectShader.setMat4("normalModel", normalModel);
+			// view matrix
+			view = camera.lookAt();
+			objectShader.setMat4("view", view);
+			objectShader.setVec3("viewPos", camera.position);
+			// projection matrix
+			projection = glm::perspective(glm::radians(camera.getCameraFov()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+			objectShader.setMat4("projection", projection);
+			glBindVertexArray(objectVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
 
 
+		}
+
+		
+		
+		
+		// -------------
+		// Sun render
+		// -------------
+		
 		// model matrix
 		model = glm::mat4(1.0f);
-		//lightPos.x = std::sin(static_cast<float>(glfwGetTime())) * 2.0f;
-		//lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-		//lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
-
-		//lightPos.z = std::cos(static_cast<float>(glfwGetTime())) * 2.0f;
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f));
 		sunShader.use();
@@ -268,6 +332,8 @@ int main() {
 		glBindVertexArray(sunVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
+
+		// -------------
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -281,7 +347,11 @@ int main() {
 	glDeleteVertexArrays(1, &sunVAO);
 	glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
-
+	std::cout << "Deleting\n";
+	for (auto cube : cubes)
+		delete cube;
+	//emerald_cube->~Cube();
+	//jade_cube->~Cube();
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();

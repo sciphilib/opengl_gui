@@ -50,7 +50,7 @@ void main()
     // specular (отражённое освещение)
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess * 128);
     vec3 specular = light.specular * spec * material.specular;
 
     vec3 result  = (ambient + diffuse + specular);

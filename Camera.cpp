@@ -96,7 +96,7 @@ void Camera::updateCameraVectors()
 	forward.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	forward.y = sin(glm::radians(pitch));
 	forward	= glm::normalize(forward);
-	left		= glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), forward));
+	left	= glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), forward));
 	up		= glm::normalize(glm::cross(forward, left));
 }
 
