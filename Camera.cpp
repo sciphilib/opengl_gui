@@ -41,7 +41,7 @@ void Camera::init(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget
 	pitch = 0.0f;
 	zoom = 45.0f;
 	movementSpeed		= 2.5f;
-	mouseSensetivity	= 0.1f;
+	mouseSensetivity	= 0.05f;
 }
 
 void Camera::processKeyboard(Camera_Movement movement, float deltaTime)

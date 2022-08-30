@@ -34,6 +34,7 @@ struct Material
 uniform Light light;
 uniform Material material;
 uniform vec3 viewPos;
+uniform vec3 result;
 
 
 void main()
@@ -50,7 +51,7 @@ void main()
     // specular (отражённое освещение)
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess * 128);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess * 256);
     vec3 specular = light.specular * spec * material.specular;
 
     vec3 result  = (ambient + diffuse + specular);

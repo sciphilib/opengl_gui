@@ -14,12 +14,15 @@ class Camera {
 public:	
 	Camera() = default;
 	Camera(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget, const glm::vec3& cameraUp = glm::vec3(0.0f, 1.0f, 0.0f));
+	void init(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget, const glm::vec3& cameraUp);
+
 	glm::mat4 lookAt();
 	void processKeyboard(Camera_Movement movement, float deltaTime);
 	void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 	void processMouseScroll(float yoffset);
 	void setEulerAngles(float yaw, float pitch);
 	float getCameraFov();
+	void updateCameraVectors();
 public:
 	// camera attributes
 	glm::vec3 position;
@@ -35,8 +38,5 @@ public:
 	float movementSpeed;
 	float mouseSensetivity;
 	float zoom;
-
-	void init(const glm::vec3& cameraPosition, const glm::vec3& cameraTarget, const glm::vec3& cameraUp);
-	void updateCameraVectors();
 };
 
